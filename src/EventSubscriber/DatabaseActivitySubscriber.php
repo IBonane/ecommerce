@@ -2,11 +2,15 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Page;
 use App\Entity\User;
 use App\Entity\Product;
 use App\Entity\Setting;
+use App\Entity\Sliders;
 use App\Entity\Category;
 use Doctrine\ORM\Events;
+use App\Entity\Collections;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
@@ -21,7 +25,7 @@ class DatabaseActivitySubscriber
 
     private $appKernel;
 
-    public function __construct(KernelInterface $appKernel)
+    public function __construct(KernelInterface $appKernel, private EntityManagerInterface $em)
     {
        $this->appKernel = $appKernel;
     }
@@ -54,7 +58,14 @@ class DatabaseActivitySubscriber
     {
         $entity = $args->getObject();
         
-        if($entity instanceof User || $entity instanceof Product || $entity instanceof Category || $entity instanceof Setting){
+        if( $entity instanceof User || 
+            $entity instanceof Product ||
+            $entity instanceof Category || 
+            $entity instanceof Setting || 
+            $entity instanceof Sliders || 
+            $entity instanceof Collections ||
+            $entity instanceof Page 
+        ){
             switch ($action) {
                     
                 case 'create':
@@ -91,8 +102,8 @@ class DatabaseActivitySubscriber
                     break;
 
                 case 'update':
-
-                    $changeSet = $args->getEntityManager()->getUnitOfWork()->getEntityChangeSet($entity);
+                    $unitOfWork = $this->em->getUnitOfWork();
+                    $changeSet = $unitOfWork->getEntityChangeSet($entity);
 
                     if (isset($changeSet['name'])) {
 
@@ -105,6 +116,33 @@ class DatabaseActivitySubscriber
                     break;
             }
            
+        }
+
+        if($entity instanceof Page){
+            switch ($action) {
+
+                case 'create':
+
+                    $title = $entity->getTitle();
+                    $slug = $this->slugify($title);
+
+                    $entity->setSlug($slug);
+                    break;
+
+                case 'update':
+                    $unitOfWork = $this->em->getUnitOfWork();
+                    $changeSet = $unitOfWork->getEntityChangeSet($entity);
+
+                    if (isset($changeSet['title'])) {
+
+                        $title = $entity->getTitle();
+
+                        $slug = $this->slugify($title);
+
+                        $entity->setSlug($slug);
+                    }
+                    break;
+            }
         }
     }
 
