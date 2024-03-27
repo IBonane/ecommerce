@@ -28,8 +28,8 @@ class CategoryCrudController extends AbstractCrudController
             BooleanField::new('isMega'),
             ImageField::new('imageUrl')
             ->setBasePath("assets/images/categories")
-            ->setUploadDir("/public/assets/images/categories")
             ->setUploadedFileNamePattern('[randomhash].[extension]')
+            ->setUploadDir("/public/assets/images/categories")->setRequired($pageName === Crud::PAGE_NEW)
             ,
         ];
     }

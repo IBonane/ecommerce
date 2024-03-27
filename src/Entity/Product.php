@@ -56,10 +56,10 @@ class Product
     private ?bool $isBestSeller = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $IsNewArrival = null;
+    private ?bool $isNewArrival = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $IsFeatured = null;
+    private ?bool $isFeatured = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $isSpecialOffer = null;
@@ -69,6 +69,9 @@ class Product
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    private ?self $relatedProducts = null;
 
     public function __construct()
     {
@@ -251,24 +254,24 @@ class Product
 
     public function isIsNewArrival(): ?bool
     {
-        return $this->IsNewArrival;
+        return $this->isNewArrival;
     }
 
-    public function setIsNewArrival(?bool $IsNewArrival): static
+    public function setIsNewArrival(?bool $isNewArrival): static
     {
-        $this->IsNewArrival = $IsNewArrival;
+        $this->isNewArrival = $isNewArrival;
 
         return $this;
     }
 
     public function isIsFeatured(): ?bool
     {
-        return $this->IsFeatured;
+        return $this->isFeatured;
     }
 
-    public function setIsFeatured(?bool $IsFeatured): static
+    public function setIsFeatured(?bool $isFeatured): static
     {
-        $this->IsFeatured = $IsFeatured;
+        $this->isFeatured = $isFeatured;
 
         return $this;
     }
@@ -305,6 +308,18 @@ class Product
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getRelatedProducts(): ?self
+    {
+        return $this->relatedProducts;
+    }
+
+    public function setRelatedProducts(?self $relatedProducts): static
+    {
+        $this->relatedProducts = $relatedProducts;
 
         return $this;
     }

@@ -51,11 +51,13 @@ class ProductCrudController extends AbstractCrudController
             ])
             ->setBasePath("assets/images/products")
             ->setUploadDir("/public/assets/images/products")
-            ->setUploadedFileNamePattern('[randomhash].[extension]'),
+            ->setUploadedFileNamePattern('[randomhash].[extension]')
+            ->setRequired($pageName === Crud::PAGE_NEW),
             MoneyField::new('solde_price')->setCurrency("EUR"),
             MoneyField::new('regular_price')->setCurrency("EUR"),
             IntegerField::new('stock'),
             AssociationField::new('categories'),
+            AssociationField::new('relatedProducts')->hideOnIndex(),
             BooleanField::new('isBestSeller'),
             BooleanField::new('isNewArrival'),
             BooleanField::new('isFeatured'),

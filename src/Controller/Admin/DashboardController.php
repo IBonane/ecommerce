@@ -28,10 +28,10 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            // Redirect non-admin users to a different route, such as the homepage
-            return new RedirectResponse($this->generateUrl('app_home'));
-        }
+        // if (!$this->isGranted('ROLE_ADMIN')) {
+        //     // Redirect non-admin users to a different route, such as the homepage
+        //     return new RedirectResponse($this->generateUrl('app_home'));
+        // }
 
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
         return $this->redirect($adminUrlGenerator->setController(ProductCrudController::class)->generateUrl());
